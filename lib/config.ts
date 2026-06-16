@@ -8,8 +8,8 @@ export const site = {
   location: "Austin, Texas",
   // Where inquiries are sent. Change to the gallery/estate contact address.
   email: "jared.huke@daitodesign.com",
-  // Production URL (updated after first Vercel deploy).
-  url: "https://thehukecollection.vercel.app",
+  // Production URL (update to a custom domain if/when you add one).
+  url: "https://the-huke-collection.vercel.app",
 
   // Google Sheet "control panel". When set (here or via the HUKE_SHEET_ID env var),
   // the live site reads titles, prices, sold status, and visibility from the sheet
