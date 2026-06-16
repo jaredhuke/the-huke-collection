@@ -6,12 +6,13 @@ import path from "node:path";
 import sharp from "sharp";
 
 const SITE = path.resolve(import.meta.dirname, "..");
-const hero = path.join(SITE, "public", "artworks", "selected-14.jpg");
+// Use a confirmed, attributed collaborative work for the share image.
+const hero = path.join(SITE, "public", "artworks", "collab-01.jpg");
 const out = path.join(SITE, "public", "og.jpg");
 
 const W = 1200, H = 630, ART_W = 560;
 
-const art = await sharp(fs.existsSync(hero) ? hero : path.join(SITE, "public", "artworks", "selected-01.jpg"))
+const art = await sharp(fs.existsSync(hero) ? hero : path.join(SITE, "public", "artworks", "randy-01.jpg"))
   .resize(ART_W, H, { fit: "cover", position: "attention" })
   .toBuffer();
 

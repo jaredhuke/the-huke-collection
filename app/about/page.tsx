@@ -2,14 +2,20 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getArtworks } from "@/lib/artworks";
+import peopleData from "@/data/people.json";
 import Reveal from "@/components/Reveal";
+import ParallaxImage from "@/components/ParallaxImage";
 
 export const metadata: Metadata = {
   title: "The Artists",
   description:
-    "Randy Huke and John Huke (1948–2016) — two Austin artists and lifelong creative partners. Painters, a sculptor and printmaker, filmmakers, and makers of the collaborative drawings they called Visual Conversations.",
+    "Randy Huke (now 79) and John Huke (1948–2016) — two Austin artists, lifelong partners, and rare collaborators. Painters, a sculptor and printmaker, filmmakers, and makers of the drawings they called Visual Conversations.",
   alternates: { canonical: "/about" },
 };
+
+type Person = { id: string; image: string; caption: string; visible: boolean; width: number; height: number; blur?: string };
+const people = (peopleData as Person[]).filter((p) => p.visible);
+const photo = (id: string) => people.find((p) => p.id === id);
 
 const EXHIBITIONS = [
   { v: "Austin Museum of Art (Laguna Gloria)", c: "Austin, Texas" },
@@ -19,64 +25,108 @@ const EXHIBITIONS = [
   { v: "Lonesome Dove lithographs", c: "from the set of the 1989 production" },
 ];
 
+const RANDY_FILMS = [
+  "The Faculty (1998)", "Miss Congeniality (2000)", "Idiocracy (2006)",
+  "2 Guns (2013)", "The Leftovers (HBO)",
+];
+const JOHN_FILMS = [
+  "Lonesome Dove (1989)", "Point Break (1991)", "Body Snatchers (1993)",
+  "The Beverly Hillbillies (1993)", "Empire Records (1995)",
+  "Lewis & Clark & George (1997)", "Drop Dead Sexy (2005)", "Being Rose (2017)",
+];
+
 export default async function AboutPage() {
   const all = await getArtworks();
-  const randyWork =
-    all.find((a) => a.artist === "Randy Huke") ?? all.find((a) => a.medium === "Painting");
   const collabWork = all.find((a) => a.artist === "John & Randy Huke");
+
+  const hero = photo("couple-table");
+  const randyPhoto = photo("couple-hills");
+  const johnPhoto = photo("john-portrait");
+  const lovePhoto = photo("couple-roses");
 
   return (
     <div>
-      {/* Intro */}
-      <section className="mx-auto max-w-[1400px] px-5 pt-12 sm:px-8 sm:pt-20">
-        <p className="eyebrow">The Artists</p>
-        <h1 className="mt-5 max-w-4xl font-display text-[2.6rem] leading-[1.05] tracking-[-0.02em] sm:text-6xl">
-          Randy &amp; John Huke
-        </h1>
-        <p className="mt-7 max-w-2xl text-lg leading-relaxed text-muted">
-          For more than four decades, Randy Huke and her husband John Huke
-          (1948&ndash;2016) made art side by side in Austin, Texas — two distinct
-          painters with a shared language of color and mark-making, and a lifelong
-          habit of collaboration.
-        </p>
+      {/* Parallax hero */}
+      <section className="relative flex min-h-[78vh] items-end overflow-hidden">
+        {hero && <ParallaxImage src={hero.image} blur={hero.blur} priority />}
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/30 to-ink/40" />
+        <div className="relative z-10 mx-auto w-full max-w-[1400px] px-5 pb-16 sm:px-8 sm:pb-24">
+          <div className="rise-in max-w-2xl text-bg">
+            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-bg/70">The Artists</p>
+            <h1 className="mt-4 font-display text-[2.8rem] leading-[1.02] tracking-[-0.02em] sm:text-6xl">
+              Randy &amp; John Huke
+            </h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-bg/85">
+              For more than four decades, Randy Huke and her husband John Huke
+              (1948&ndash;2016) made art side by side in Austin, Texas — two distinct
+              painters, lifelong partners, and rare collaborators.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* A great love */}
+      <section className="mx-auto max-w-[1400px] px-5 py-24 sm:px-8 sm:py-28">
+        <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
+          <Reveal>
+            <p className="eyebrow">A great love &amp; a rare collaboration</p>
+            <h2 className="mt-3 font-display text-4xl leading-tight sm:text-5xl">
+              Two hands, one conversation
+            </h2>
+            <div className="mt-6 space-y-4 leading-relaxed text-muted">
+              <p>
+                Randy and John met young and stayed in love for a lifetime — married
+                forty-six years, raising a family while building two distinct bodies of
+                work in the same studio. Theirs was the rarest kind of artistic
+                partnership: two strong, separate visions that could meet on a single
+                sheet of paper without either one disappearing.
+              </p>
+              <p>
+                They called those shared pieces <em>Visual Conversations</em>. One would
+                begin a drawing, then they would trade — answering, layering, and
+                pushing each other&rsquo;s marks until the work was finished by two hands
+                at once. It is hard to do. They made it look like love.
+              </p>
+            </div>
+          </Reveal>
+          {lovePhoto && (
+            <Reveal delay={80}>
+              <div className="relative aspect-[4/3] overflow-hidden bg-surface">
+                <Image src={lovePhoto.image} alt="Randy and John Huke" fill sizes="(max-width:768px) 100vw, 45vw" placeholder={lovePhoto.blur ? "blur" : "empty"} blurDataURL={lovePhoto.blur} className="object-cover" />
+              </div>
+            </Reveal>
+          )}
+        </div>
       </section>
 
       {/* Randy */}
-      <section className="mx-auto mt-20 max-w-[1400px] px-5 sm:mt-28 sm:px-8">
+      <section className="mx-auto max-w-[1400px] px-5 sm:px-8">
         <div className="grid gap-10 md:grid-cols-2 md:items-center md:gap-16">
           <Reveal>
-            {randyWork && (
+            {randyPhoto && (
               <div className="relative aspect-[4/5] overflow-hidden bg-surface">
-                <Image
-                  src={randyWork.image}
-                  alt={`Painting by Randy Huke`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 45vw"
-                  placeholder={randyWork.blur ? "blur" : "empty"}
-                  blurDataURL={randyWork.blur}
-                  className="object-cover"
-                />
+                <Image src={randyPhoto.image} alt="Randy Huke" fill sizes="(max-width:768px) 100vw, 45vw" placeholder={randyPhoto.blur ? "blur" : "empty"} blurDataURL={randyPhoto.blur} className="object-cover object-left" />
               </div>
             )}
           </Reveal>
           <Reveal delay={80}>
-            <p className="eyebrow">Painter</p>
+            <p className="eyebrow">Painter · b. 1947</p>
             <h2 className="mt-3 font-display text-4xl sm:text-5xl">Randy Huke</h2>
             <div className="mt-6 space-y-4 leading-relaxed text-muted">
               <p>
-                Randy Huke is an Austin painter whose work moves fluidly between
-                exuberant color and quiet, searching abstraction. Across canvases,
-                drawings, and works on paper, she builds images that feel at once
-                spontaneous and deeply considered — gestural fields, floating organic
-                forms, and passages of luminous, unexpected color.
+                Randy Huke is an Austin painter — now 79 and still in the studio — whose
+                work moves fluidly between exuberant color and quiet, searching
+                abstraction. Across canvases, drawings, and works on paper, she builds
+                images that feel at once spontaneous and deeply considered: gestural
+                fields, floating organic forms, and passages of luminous, unexpected
+                color.
               </p>
               <p>
-                Alongside her studio practice, Randy has spent a career in film as a
-                set decorator and art director, shaping the look of features
-                including <em>The Faculty</em>, <em>Idiocracy</em>,{" "}
-                <em>Miss Congeniality</em>, and <em>2 Guns</em>. The painter&rsquo;s eye
-                and the production designer&rsquo;s command of space, color, and
-                texture run through everything she makes.
+                Alongside her studio practice, Randy spent a career in film as a set
+                decorator and art director, shaping the look of features including{" "}
+                <em>The Faculty</em>, <em>Idiocracy</em>, <em>Miss Congeniality</em>, and{" "}
+                <em>2 Guns</em>. The painter&rsquo;s eye and the production designer&rsquo;s
+                command of space, color, and texture run through everything she makes.
               </p>
             </div>
           </Reveal>
@@ -87,18 +137,14 @@ export default async function AboutPage() {
       <section className="mx-auto mt-20 max-w-[1400px] px-5 sm:mt-28 sm:px-8">
         <div className="grid gap-10 md:grid-cols-2 md:items-center md:gap-16">
           <Reveal delay={80} className="md:order-2">
-            <div className="relative aspect-[4/5] overflow-hidden bg-surface">
-              <Image
-                src="/about/john-huke-portrait.jpg"
-                alt="Portrait of artist John Huke"
-                fill
-                sizes="(max-width: 768px) 100vw, 45vw"
-                className="object-cover"
-              />
-            </div>
+            {johnPhoto && (
+              <div className="relative aspect-[4/5] overflow-hidden bg-surface">
+                <Image src={johnPhoto.image} alt="John Huke" fill sizes="(max-width:768px) 100vw, 45vw" placeholder={johnPhoto.blur ? "blur" : "empty"} blurDataURL={johnPhoto.blur} className="object-cover" />
+              </div>
+            )}
           </Reveal>
           <Reveal className="md:order-1">
-            <p className="eyebrow">Artist &middot; Sculptor &middot; Filmmaker &middot; 1948&ndash;2016</p>
+            <p className="eyebrow">Artist · Sculptor · Filmmaker · 1948&ndash;2016</p>
             <h2 className="mt-3 font-display text-4xl sm:text-5xl">John Huke</h2>
             <div className="mt-6 space-y-4 leading-relaxed text-muted">
               <p>
@@ -115,9 +161,9 @@ export default async function AboutPage() {
                 decades as a production designer and art director, with credits
                 including <em>Lonesome Dove</em>, <em>Point Break</em>,{" "}
                 <em>Empire Records</em>, and <em>The Beverly Hillbillies</em>. From the
-                set of <em>Lonesome Dove</em> he made a celebrated series of
-                lithographs. His paintings, prints, and sculpture were exhibited at the
-                Austin Museum of Art and the Mary Ryan Gallery in New York.
+                set of <em>Lonesome Dove</em> he made a celebrated series of lithographs.
+                His paintings, prints, and sculpture were exhibited at the Austin Museum
+                of Art and the Mary Ryan Gallery in New York.
               </p>
             </div>
           </Reveal>
@@ -128,47 +174,50 @@ export default async function AboutPage() {
       <section className="mt-24 border-y border-hairline bg-surface sm:mt-32">
         <div className="mx-auto grid max-w-[1400px] gap-10 px-5 py-20 sm:px-8 md:grid-cols-2 md:items-center md:gap-16">
           <Reveal>
-            <p className="eyebrow">Collaboration</p>
+            <p className="eyebrow">The collaboration</p>
             <h2 className="mt-3 font-display text-4xl sm:text-5xl">Visual Conversations</h2>
-            <div className="mt-6 space-y-4 leading-relaxed text-muted">
-              <p>
-                Married for forty-six years, Randy and John were lifelong creative
-                partners. Their collaborative drawings — which they called{" "}
-                <em>Visual Conversations</em> — began as a dialogue on paper: one would
-                start a drawing, then they would trade sheets, each answering and
-                building on the other&rsquo;s marks until the work was finished by two
-                hands at once.
-              </p>
-              <p>
-                These collaborations have been exhibited at the Austin Museum of Art
-                (Laguna Gloria), the Mary Ryan Gallery in New York, and the Rodin
-                Gallery in St. Louis.
-              </p>
-            </div>
+            <p className="mt-6 leading-relaxed text-muted">
+              Their collaborative drawings have been exhibited at the Austin Museum of
+              Art (Laguna Gloria), the Mary Ryan Gallery in New York, and the Rodin
+              Gallery in St. Louis — two artists finishing a single work, together.
+            </p>
+            <Link href="/works?series=Visual+Conversations" className="link-underline mt-6 inline-block text-[0.72rem] uppercase tracking-[0.2em] text-muted hover:text-ink">
+              See the collaborations →
+            </Link>
           </Reveal>
-          <Reveal delay={80}>
-            {collabWork && (
+          {collabWork && (
+            <Reveal delay={80}>
               <div className="relative aspect-[5/4] overflow-hidden bg-bg">
-                <Image
-                  src={collabWork.image}
-                  alt="Collaborative drawing by Randy and John Huke"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 45vw"
-                  placeholder={collabWork.blur ? "blur" : "empty"}
-                  blurDataURL={collabWork.blur}
-                  className="object-contain"
-                />
+                <Image src={collabWork.image} alt="Collaborative drawing by Randy and John Huke" fill sizes="(max-width:768px) 100vw, 45vw" placeholder={collabWork.blur ? "blur" : "empty"} blurDataURL={collabWork.blur} className="object-contain" />
               </div>
-            )}
-          </Reveal>
+            </Reveal>
+          )}
         </div>
       </section>
 
+      {/* Photographs */}
+      {people.filter((p) => p.id.startsWith("couple")).length > 0 && (
+        <section className="mx-auto max-w-[1400px] px-5 py-24 sm:px-8">
+          <Reveal>
+            <h2 className="font-display text-3xl">Randy &amp; John</h2>
+          </Reveal>
+          <div className="mt-8 grid gap-5 sm:grid-cols-3">
+            {people.filter((p) => p.id.startsWith("couple")).map((p, i) => (
+              <Reveal key={p.id} delay={i * 80}>
+                <div className="relative aspect-[4/3] overflow-hidden bg-surface">
+                  <Image src={p.image} alt={p.caption} fill sizes="(max-width:768px) 100vw, 33vw" placeholder={p.blur ? "blur" : "empty"} blurDataURL={p.blur} className="object-cover" />
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Exhibitions + Film */}
-      <section className="mx-auto max-w-[1400px] px-5 py-24 sm:px-8 sm:py-28">
+      <section className="mx-auto max-w-[1400px] px-5 pb-24 sm:px-8 sm:pb-28">
         <div className="grid gap-16 md:grid-cols-2">
           <Reveal>
-            <h2 className="font-display text-3xl">Selected Exhibitions &amp; Recognition</h2>
+            <h2 className="font-display text-3xl">Selected Exhibitions</h2>
             <ul className="mt-7 divide-y divide-hairline">
               {EXHIBITIONS.map((e) => (
                 <li key={e.v} className="flex flex-col gap-1 py-4 sm:flex-row sm:justify-between sm:gap-6">
@@ -180,37 +229,34 @@ export default async function AboutPage() {
           </Reveal>
           <Reveal delay={80}>
             <h2 className="font-display text-3xl">Film &amp; Screen</h2>
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              Beyond the studio, Randy and John spent decades in the film world — Randy
+              as a set decorator and art director, John as a production designer and art
+              director — shaping the look of features shot in Texas and beyond.
+            </p>
             <div className="mt-7 space-y-6">
-              <div>
-                <p className="text-[0.7rem] uppercase tracking-[0.2em] text-faint">
-                  Randy Huke — Set Decorator / Art Director
-                </p>
-                <p className="mt-2 leading-relaxed text-muted">
-                  The Faculty · Idiocracy · Miss Congeniality · 2 Guns · The Leftovers
-                </p>
-              </div>
-              <div>
-                <p className="text-[0.7rem] uppercase tracking-[0.2em] text-faint">
-                  John Huke — Production Designer / Art Director
-                </p>
-                <p className="mt-2 leading-relaxed text-muted">
-                  Lonesome Dove · Point Break · Empire Records · The Beverly Hillbillies
-                  · Body Snatchers
-                </p>
-              </div>
+              <FilmCol who="Randy Huke — Set Decorator / Art Director" films={RANDY_FILMS} />
+              <FilmCol who="John Huke — Production Designer / Art Director" films={JOHN_FILMS} />
             </div>
           </Reveal>
         </div>
 
         <div className="mt-16 text-center">
-          <Link
-            href="/works"
-            className="inline-flex items-center border border-ink px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-ink transition-colors hover:bg-ink hover:text-bg"
-          >
+          <Link href="/works" className="group inline-flex items-center gap-3 border border-ink px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-ink transition-colors hover:bg-ink hover:text-bg">
             Explore the Works
+            <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
           </Link>
         </div>
       </section>
+    </div>
+  );
+}
+
+function FilmCol({ who, films }: { who: string; films: string[] }) {
+  return (
+    <div>
+      <p className="text-[0.7rem] uppercase tracking-[0.2em] text-faint">{who}</p>
+      <p className="mt-2 leading-relaxed text-muted">{films.join(" · ")}</p>
     </div>
   );
 }

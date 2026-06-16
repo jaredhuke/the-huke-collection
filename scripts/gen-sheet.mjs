@@ -18,7 +18,7 @@ const FEATURED = new Set([
 
 const HEADERS = [
   "id", "title", "artist", "year", "medium", "dimensions",
-  "price", "status", "visible", "featured", "image", "description",
+  "price", "status", "visible", "featured", "rotate", "series", "image", "description",
 ];
 
 const esc = (v) => {
@@ -37,6 +37,8 @@ const rows = manifest.map((m) => [
   "Available",
   "TRUE",
   FEATURED.has(m.id) ? "TRUE" : "FALSE",
+  "0",
+  m.group === "collab" ? "Visual Conversations" : "",
   path.basename(m.image),
   "",
 ]);

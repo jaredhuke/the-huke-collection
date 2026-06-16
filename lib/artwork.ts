@@ -16,9 +16,17 @@ export type Artwork = {
   height: number;
   description: string;
   blur?: string;
+  rotate?: number; // 0 | 90 | 180 | 270 — corrects a sideways/upside-down photo
+  series?: string; // optional grouping by era / body of work
 };
 
 export const ARTIST_ORDER = ["Randy Huke", "John Huke", "John & Randy Huke"];
+
+/** Normalize any rotation value to 0/90/180/270. */
+export function normRotate(r: number | undefined): 0 | 90 | 180 | 270 {
+  const n = (((Math.round((r || 0) / 90) * 90) % 360) + 360) % 360;
+  return n as 0 | 90 | 180 | 270;
+}
 
 export function artistLabel(a: string): string {
   return a && a.trim() ? a.trim() : "The Huke Collection";

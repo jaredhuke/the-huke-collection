@@ -44,6 +44,9 @@ export const SEED: Artwork[] = (manifest as ManifestItem[]).map((m) => ({
   height: m.height,
   description: "",
   blur: m.blur,
+  rotate: 0,
+  // First-take series grouping: the collaborative drawings are "Visual Conversations".
+  series: m.group === "collab" ? "Visual Conversations" : "",
 }));
 
 async function fetchSheet(): Promise<Record<string, string>[] | null> {
@@ -98,7 +101,7 @@ export async function getArtworks(): Promise<Artwork[]> {
           id: id || `row-${out.length + 1}`,
           title: "Untitled", artist: "", year: "", medium: "", dimensions: "",
           price: "", status: "Available", visible: true, featured: false,
-          image: "", width: 0, height: 0, description: "",
+          image: "", width: 0, height: 0, description: "", rotate: 0, series: "",
         };
 
     const set = (k: keyof Artwork, v?: string) => {
@@ -112,9 +115,12 @@ export async function getArtworks(): Promise<Artwork[]> {
     set("price", row.price);
     set("status", row.status);
     set("description", row.description);
+    set("series", row.series);
     if (row.image && row.image.trim()) aw.image = resolveImage(row.image.trim());
     aw.visible = boolFrom(row.visible, aw.visible);
     aw.featured = boolFrom(row.featured, aw.featured);
+    const rot = parseInt((row.rotate || "").trim(), 10);
+    if (!Number.isNaN(rot)) aw.rotate = rot;
 
     out.push(aw);
     if (aw.id) seen.add(aw.id);

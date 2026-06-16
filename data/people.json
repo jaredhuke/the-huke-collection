@@ -1,0 +1,38 @@
+[
+  {
+    "id": "couple-table",
+    "image": "/about/couple-table.jpg",
+    "caption": "Randy & John Huke",
+    "visible": true,
+    "width": 1307,
+    "height": 1700,
+    "blur": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADwAwCdASoQABUAPxl2slEspySisAgBkCMJagCdMoAC2GKcAQ6EyqoAAPyC6wdDAxLoS+z8FYZSoyg3KEjMCEN6Dkc3NDSSNLlJvZTv+oqCr/+qp6CFR3dcWw5pTWVHrKGT5xHQ6XczkSuqj6DT3C9XfNXkAAAA"
+  },
+  {
+    "id": "couple-hills",
+    "image": "/about/couple-hills.jpg",
+    "caption": "Randy & John Huke",
+    "visible": true,
+    "width": 1700,
+    "height": 1275,
+    "blur": "data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAAAQAgCdASoQAAwABABsJbACdH8AF+xKNJ9oAP2c6kDCmx8+cXuAnfXOBSRP7TAzZUI+HFlB2YfmuevmvZ3kKy38SiMYoCw1QLg5tB3sq9p9b71d6eFwV8RWL23YADgAAAA="
+  },
+  {
+    "id": "couple-roses",
+    "image": "/about/couple-roses.jpg",
+    "caption": "Randy & John Huke",
+    "visible": true,
+    "width": 960,
+    "height": 720,
+    "blur": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAAAwAgCdASoQAAwABABsJagCsH8AFnKic6ZQAAD+6Zxg6L2tSe8VG8zp4Ku2RBjCxsNJ7sPHymnsx+rVp541FHl8LwNFQbiPgQF1I9MZ0PslcYA4/TL4tqs9V0kXZcM/gAAAAA=="
+  },
+  {
+    "id": "john-portrait",
+    "image": "/about/john-portrait.jpg",
+    "caption": "John Huke",
+    "visible": true,
+    "width": 720,
+    "height": 960,
+    "blur": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAQBACdASoQABUAPxl0sVCspqSisAgBkCMJZQC06BjRXFkYFg2YO2CQAAD9lK1IciEa5ePv8HL0HMc05oz6CwvjE12ofRmnim2xXvGIxOREVfgLih1QIkX3Sk1tMXY1K8ZdXU1wulHDvnkMIc0AAA=="
+  }
+]

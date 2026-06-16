@@ -58,6 +58,32 @@
   }
 }
 
+/* Ken Burns slow zoom for hero slides */
+@keyframes kenburns {
+  from { transform: scale(1) translate3d(0, 0, 0); }
+  to { transform: scale(1.09) translate3d(0, -1.2%, 0); }
+}
+.kenburns { animation: kenburns 7s ease-out both; }
+
+/* Hero content rise-in */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: none; }
+}
+.rise-in { animation: rise-in 1s cubic-bezier(0.2, 0.6, 0.2, 1) both; }
+
+/* CSS parallax band (image scrolls slower behind content) */
+.parallax {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+@media (prefers-reduced-motion: reduce) {
+  .kenburns { animation: none; }
+  .parallax { background-attachment: scroll; }
+}
+
 /* Lightbox fade-in */
 @keyframes lb-fade {
   from { opacity: 0; }

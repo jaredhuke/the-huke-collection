@@ -25,9 +25,9 @@ export default function SiteFooter() {
 
           <div className="flex flex-col gap-2 text-sm">
             <p className="eyebrow mb-2">Contact</p>
-            <a className="link-underline w-fit text-muted hover:text-ink" href={`mailto:${site.email}`}>
-              {site.email}
-            </a>
+            <Link className="link-underline w-fit text-muted hover:text-ink" href="/inquire">
+              Make an inquiry
+            </Link>
             <p className="text-muted">{site.location}</p>
           </div>
         </div>

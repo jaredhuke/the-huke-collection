@@ -24,14 +24,12 @@ export default function InquirePage() {
         <InquiryForm />
       </div>
 
-      <div className="mt-16 border-t border-hairline pt-8">
+      <div className="mt-16 border-t border-hairline pt-8 text-muted">
         <p className="text-[0.7rem] uppercase tracking-[0.2em] text-faint">Contact</p>
-        <div className="mt-3 flex flex-col gap-1 text-muted">
-          <a href={`mailto:${site.email}`} className="link-underline w-fit hover:text-ink">
-            {site.email}
-          </a>
-          <span>{site.location}</span>
-        </div>
+        <p className="mt-3">{site.location}</p>
+        <p className="mt-1 text-sm text-faint">
+          Messages go straight to the family. We read every one.
+        </p>
       </div>
     </div>
   );

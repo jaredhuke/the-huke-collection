@@ -1,70 +1,55 @@
-import Image from "next/image";
 import Link from "next/link";
-import { getArtworks, getFeatured } from "@/lib/artworks";
+import { getArtworks } from "@/lib/artworks";
 import { artistLabel, captionLine, type Artwork } from "@/lib/artwork";
+import peopleData from "@/data/people.json";
 import Reveal from "@/components/Reveal";
+import ArtImage from "@/components/ArtImage";
+import HeroSlideshow from "@/components/HeroSlideshow";
+import ParallaxImage from "@/components/ParallaxImage";
+
+type Person = { id: string; image: string; caption: string; visible: boolean; width: number; height: number; blur?: string };
+const people = peopleData as Person[];
 
 export default async function HomePage() {
-  const [all, featured] = await Promise.all([getArtworks(), getFeatured(9)]);
-  const byId = (id: string) => all.find((a) => a.id === id);
-  const hero = byId("selected-14") ?? featured[0] ?? all[0];
-  const randyWork = all.find((a) => a.artist === "Randy Huke") ?? byId("randy-01");
-  const johnWork =
-    all.find((a) => a.artist === "John Huke" && a.medium === "Sculpture") ??
-    all.find((a) => a.artist === "John Huke");
+  const all = await getArtworks();
+  const confirmed = all.filter((a) => a.artist); // attributed works only
+  const featured = confirmed.filter((a) => a.featured);
+  const heroSlides = [...featured, ...confirmed.filter((a) => !a.featured)].slice(0, 5);
+  const grid = (featured.length ? featured : confirmed).slice(0, 9);
+  const love = people.find((p) => p.id === "couple-hills" && p.visible) ?? people.find((p) => p.visible);
 
   return (
     <>
-      {/* Hero */}
-      <section className="mx-auto max-w-[1400px] px-5 pt-12 sm:px-8 sm:pt-20">
-        <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
-          <div>
-            <p className="eyebrow">Austin, Texas</p>
-            <h1 className="mt-5 font-display text-[3.2rem] leading-[0.98] tracking-[-0.02em] sm:text-7xl lg:text-[5.4rem]">
-              The Huke
-              <br />
-              Collection
+      {/* Hero — full-screen slideshow */}
+      <section className="relative flex h-[88vh] min-h-[560px] w-full items-end overflow-hidden">
+        <HeroSlideshow slides={heroSlides} />
+        <div className="relative z-10 mx-auto w-full max-w-[1400px] px-5 pb-20 sm:px-8 sm:pb-28">
+          <div className="rise-in max-w-2xl text-bg">
+            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-bg/70">Austin, Texas</p>
+            <h1 className="mt-4 font-display text-[3.4rem] leading-[0.95] tracking-[-0.02em] text-bg sm:text-7xl lg:text-[6rem]">
+              The Huke Collection
             </h1>
-            <p className="mt-7 max-w-md text-lg leading-relaxed text-muted">
-              Paintings, works on paper, and sculpture by{" "}
-              <span className="text-ink">Randy Huke</span> and{" "}
-              <span className="text-ink">John Huke</span>{" "}
-              (1948&ndash;2016) — two Austin artists and lifelong creative
-              partners.
+            <p className="mt-6 max-w-lg text-lg leading-relaxed text-bg/85">
+              The paintings, works on paper, and sculpture of Randy Huke and John Huke
+              (1948&ndash;2016) — two Austin artists and lifelong creative partners.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <Link
                 href="/works"
-                className="inline-flex items-center bg-ink px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-bg transition-colors hover:bg-accent"
+                className="group inline-flex items-center gap-3 bg-bg px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-ink transition-colors hover:bg-accent hover:text-bg"
               >
                 View the Works
+                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </Link>
               <Link
                 href="/about"
-                className="link-underline inline-flex items-center py-4 text-[0.72rem] uppercase tracking-[0.2em] text-muted hover:text-ink"
+                className="group inline-flex items-center gap-3 border border-bg/50 px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-bg transition-colors hover:bg-bg hover:text-ink"
               >
-                Meet the Artists
+                Their Story
+                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </Link>
             </div>
           </div>
-
-          {hero && (
-            <div className="relative">
-              <div className="bg-surface p-3 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.45)] sm:p-4">
-                <Image
-                  src={hero.image}
-                  alt={`${hero.title} — ${artistLabel(hero.artist)}`}
-                  width={hero.width || 1400}
-                  height={hero.height || 1100}
-                  sizes="(max-width: 1024px) 100vw, 52vw"
-                  placeholder={hero.blur ? "blur" : "empty"}
-                  blurDataURL={hero.blur}
-                  priority
-                  className="h-auto w-full"
-                />
-              </div>
-            </div>
-          )}
         </div>
       </section>
 
@@ -84,17 +69,13 @@ export default async function HomePage() {
         <Reveal>
           <div className="flex items-end justify-between border-b border-hairline pb-5">
             <h2 className="font-display text-3xl sm:text-4xl">Selected Works</h2>
-            <Link
-              href="/works"
-              className="link-underline text-[0.72rem] uppercase tracking-[0.2em] text-muted hover:text-ink"
-            >
+            <Link href="/works" className="link-underline text-[0.72rem] uppercase tracking-[0.2em] text-muted hover:text-ink">
               View all
             </Link>
           </div>
         </Reveal>
-
         <div className="mt-8 columns-1 gap-6 sm:columns-2 lg:columns-3">
-          {featured.map((a, i) => (
+          {grid.map((a, i) => (
             <Reveal key={a.id} delay={(i % 3) * 90} className="mb-6 break-inside-avoid">
               <FeaturedCard a={a} />
             </Reveal>
@@ -102,7 +83,29 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* The artists */}
+      {/* Their great love — parallax band */}
+      {love && (
+        <section className="relative mt-28 flex min-h-[70vh] items-center justify-center overflow-hidden">
+          <ParallaxImage src={love.image} blur={love.blur} />
+          <div className="absolute inset-0 bg-ink/55" />
+          <Reveal className="relative z-10 mx-auto max-w-2xl px-6 py-28 text-center text-bg">
+            <p className="text-[0.72rem] uppercase tracking-[0.3em] text-bg/70">A great love</p>
+            <p className="mt-5 font-display text-3xl leading-[1.4] sm:text-[2.4rem]">
+              They were partners in everything — in life, in the studio, and on the page,
+              trading drawings back and forth until two hands became one.
+            </p>
+            <Link
+              href="/about"
+              className="group mt-9 inline-flex items-center gap-3 border border-bg/60 px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-bg transition-colors hover:bg-bg hover:text-ink"
+            >
+              Read their story
+              <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+            </Link>
+          </Reveal>
+        </section>
+      )}
+
+      {/* Artists teaser */}
       <section className="mx-auto max-w-[1400px] px-5 py-24 sm:px-8 sm:py-32">
         <Reveal>
           <p className="eyebrow text-center">Two artists, one studio</p>
@@ -110,23 +113,15 @@ export default async function HomePage() {
         </Reveal>
         <div className="mt-12 grid gap-8 md:grid-cols-2 md:gap-12">
           <ArtistTeaser
-            work={randyWork}
+            work={confirmed.find((a) => a.artist === "Randy Huke")}
             name="Randy Huke"
-            line="Painter and film set decorator whose canvases move between exuberant color and quiet, searching abstraction."
+            line="Painter and film set decorator — now 79 and still in the studio — whose canvases move between exuberant color and quiet, searching abstraction."
           />
           <ArtistTeaser
-            work={johnWork}
+            work={confirmed.find((a) => a.artist === "John Huke" && a.medium === "Sculpture") ?? confirmed.find((a) => a.artist === "John Huke")}
             name="John Huke"
             line="Artist, sculptor, printmaker, and filmmaker (1948–2016) — maker of the Lonesome Dove lithographs and a life of restless invention."
           />
-        </div>
-        <div className="mt-12 text-center">
-          <Link
-            href="/about"
-            className="inline-flex items-center border border-ink px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-ink transition-colors hover:bg-ink hover:text-bg"
-          >
-            Read their story
-          </Link>
         </div>
       </section>
 
@@ -136,14 +131,15 @@ export default async function HomePage() {
           <Reveal>
             <h2 className="font-display text-3xl sm:text-[2.5rem]">Acquire a work</h2>
             <p className="mx-auto mt-4 max-w-xl text-muted">
-              Many pieces are available to collectors. We&rsquo;re happy to share
-              prices, dimensions, and details, or to help you find the right work.
+              Many pieces are available to collectors. We&rsquo;re happy to share prices,
+              dimensions, and details, or to help you find the right work.
             </p>
             <Link
               href="/inquire"
-              className="mt-8 inline-flex items-center bg-ink px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-bg transition-colors hover:bg-accent"
+              className="group mt-8 inline-flex items-center gap-3 bg-ink px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-bg transition-colors hover:bg-accent"
             >
               Make an inquiry
+              <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
             </Link>
           </Reveal>
         </div>
@@ -154,48 +150,40 @@ export default async function HomePage() {
 
 function FeaturedCard({ a }: { a: Artwork }) {
   return (
-    <Link href="/works" className="group block">
-      <div className="overflow-hidden bg-surface">
-        <Image
-          src={a.image}
-          alt={`${a.title} — ${artistLabel(a.artist)}`}
-          width={a.width || 1200}
-          height={a.height || 900}
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          placeholder={a.blur ? "blur" : "empty"}
-          blurDataURL={a.blur}
-          className="h-auto w-full transition-transform duration-[1.2s] ease-out group-hover:scale-[1.035]"
-        />
-      </div>
+    <Link href={`/works/${a.id}`} className="group block">
+      <ArtImage
+        image={a.image}
+        width={a.width}
+        height={a.height}
+        blur={a.blur}
+        rotate={a.rotate}
+        alt={`${a.title} — ${artistLabel(a.artist)}`}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        className="bg-surface"
+        imgClassName="transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
+      />
       <p className="mt-3 font-display text-lg italic">{captionLine(a)}</p>
       <p className="text-[0.78rem] text-muted">{artistLabel(a.artist)}</p>
     </Link>
   );
 }
 
-function ArtistTeaser({
-  work,
-  name,
-  line,
-}: {
-  work?: Artwork;
-  name: string;
-  line: string;
-}) {
+function ArtistTeaser({ work, name, line }: { work?: Artwork; name: string; line: string }) {
   return (
     <Reveal className="group">
       <Link href="/about" className="block">
         {work && (
-          <div className="overflow-hidden bg-surface">
-            <Image
-              src={work.image}
+          <div className="overflow-hidden">
+            <ArtImage
+              image={work.image}
+              width={work.width}
+              height={work.height}
+              blur={work.blur}
+              rotate={work.rotate}
               alt={`Work by ${name}`}
-              width={work.width || 1200}
-              height={work.height || 900}
               sizes="(max-width: 768px) 100vw, 45vw"
-              placeholder={work.blur ? "blur" : "empty"}
-              blurDataURL={work.blur}
-              className="h-[340px] w-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04] sm:h-[420px]"
+              className="aspect-[4/3] bg-surface"
+              imgClassName="transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
             />
           </div>
         )}
