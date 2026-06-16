@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #f5f2ec;
+  --color-surface: #ffffff;
+  --color-ink: #1c1a16;
+  --color-muted: #6f6a60;
+  --color-faint: #a39c8b;
+  --color-hairline: #e3ddd0;
+  --color-accent: #8a3b2c;
+
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-inter);
+
+  --tracking-eyebrow: 0.24em;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: "ss01";
+  }
+  ::selection {
+    background: var(--color-accent);
+    color: #fff;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.012em;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-eyebrow);
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--color-faint);
+  }
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size 0.4s cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+  .link-underline:hover {
+    background-size: 100% 1px;
+  }
+}
+
+/* Lightbox fade-in */
+@keyframes lb-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.lb-fade {
+  animation: lb-fade 0.28s ease both;
+}
+
+/* Scroll-reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.9s cubic-bezier(0.2, 0.6, 0.2, 1),
+    transform 0.9s cubic-bezier(0.2, 0.6, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  html { scroll-behavior: auto; }
+}
