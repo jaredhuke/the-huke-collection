@@ -30,6 +30,9 @@ const RANDY_FILMS = [
   { y: "2000", t: "Miss Congeniality" },
   { y: "2003", t: "The Texas Chainsaw Massacre" },
   { y: "2006", t: "Idiocracy" },
+  { y: "2006", t: "The Texas Chainsaw Massacre: The Beginning" },
+  { y: "2007", t: "The Hitcher" },
+  { y: "2009", t: "Friday the 13th" },
   { y: "2013", t: "2 Guns" },
   { y: "2014", t: "The Leftovers" },
 ];
