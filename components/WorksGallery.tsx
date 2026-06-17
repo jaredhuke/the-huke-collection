@@ -224,6 +224,7 @@ export default function WorksGallery({ artworks }: { artworks: Artwork[] }) {
                 {active.dimensions && <Row label="Dimensions" value={active.dimensions} />}
                 {active.series && <Row label="Series" value={active.series} />}
                 <Row label="Availability" value={statusLabel(active)} />
+                <Row label="Ref" value={`#${active.id}`} />
               </dl>
 
               {active.description && <p className="mt-7 text-sm leading-relaxed text-bg/70">{active.description}</p>}
@@ -296,6 +297,7 @@ function GalleryCard({ a, onOpen, priority = false }: { a: Artwork; onOpen: () =
           {a.medium ? ` · ${a.medium}` : ""}
         </p>
         <p className="mt-0.5 text-[0.78rem] text-faint">{statusLabel(a)}</p>
+        <p className="mt-1 text-[0.65rem] tabular-nums tracking-[0.08em] text-faint/60">#{a.id}</p>
       </div>
     </button>
   );
