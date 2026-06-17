@@ -36,8 +36,9 @@ export default async function WorksPage() {
 
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8">
         <p className="mt-10 max-w-2xl leading-relaxed text-muted">
-          Paintings, works on paper, and sculpture by Randy and John Huke. Select a
-          piece to view details, dimensions, and availability.
+          Four decades of Austin studio practice — paintings, works on paper, and
+          sculpture. Each piece available for private acquisition; select any work to
+          inquire.
         </p>
         <div className="mt-6 pb-10">
           <WorksGallery artworks={artworks} />

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import InquiryForm from "@/components/InquiryForm";
-import { site } from "@/lib/config";
+import { getArtworks } from "@/lib/artworks";
+import { artistLabel, captionLine } from "@/lib/artwork";
 
 export const metadata: Metadata = {
   title: "Inquire",
@@ -9,27 +11,55 @@ export const metadata: Metadata = {
   alternates: { canonical: "/inquire" },
 };
 
-export default function InquirePage() {
+export default async function InquirePage() {
+  const artworks = await getArtworks();
+  const panel =
+    artworks.find((a) => a.featured && a.medium === "Painting") ??
+    artworks.find((a) => a.featured) ??
+    artworks[0];
+
   return (
-    <div className="mx-auto max-w-3xl px-5 py-16 sm:px-8 sm:py-24">
-      <p className="eyebrow">Inquiries &amp; Acquisitions</p>
-      <h1 className="mt-4 font-display text-5xl sm:text-6xl">Inquire</h1>
-      <p className="mt-6 max-w-xl leading-relaxed text-muted">
-        Whether you&rsquo;re interested in acquiring a work, requesting prices and
-        dimensions, or arranging a viewing, we&rsquo;d love to hear from you. Tell us a
-        little about what you&rsquo;re looking for and we&rsquo;ll be in touch.
-      </p>
+    <div className="flex min-h-[calc(100vh-81px)] flex-col lg:flex-row">
+      {/* Left — art panel */}
+      {panel && (
+        <div className="relative hidden lg:block lg:w-[48%] xl:w-[52%]">
+          <Image
+            src={panel.image}
+            alt={`${captionLine(panel)} — ${artistLabel(panel.artist)}`}
+            fill
+            priority
+            sizes="52vw"
+            placeholder={panel.blur ? "blur" : "empty"}
+            blurDataURL={panel.blur}
+            className="object-cover"
+            style={panel.rotate ? { transform: `rotate(${panel.rotate}deg)` } : undefined}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-10 xl:p-14">
+            <p className="font-display text-[1.6rem] italic leading-snug text-bg xl:text-[2rem]">
+              Original works by two Austin artists — available for private acquisition.
+            </p>
+            <p className="mt-5 text-[0.7rem] uppercase tracking-[0.22em] text-bg/50">
+              Austin, Texas · Est. 1970s
+            </p>
+          </div>
+        </div>
+      )}
 
-      <div className="mt-12">
-        <InquiryForm />
-      </div>
-
-      <div className="mt-16 border-t border-hairline pt-8 text-muted">
-        <p className="text-[0.7rem] uppercase tracking-[0.2em] text-faint">Contact</p>
-        <p className="mt-3">{site.location}</p>
-        <p className="mt-1 text-sm text-faint">
-          Messages go straight to the family. We read every one.
-        </p>
+      {/* Right — form */}
+      <div className="flex flex-1 flex-col justify-center px-6 py-16 sm:px-10 lg:px-16 lg:py-20 xl:px-20">
+        <div className="mx-auto w-full max-w-lg">
+          <p className="eyebrow">Inquiries &amp; Acquisitions</p>
+          <h1 className="mt-4 font-display text-5xl leading-tight sm:text-6xl">Inquire</h1>
+          <p className="mt-5 leading-relaxed text-muted">
+            Whether you&rsquo;re interested in acquiring a work, requesting prices, or
+            arranging a viewing — we&rsquo;d love to hear from you. Messages go straight
+            to the family.
+          </p>
+          <div className="mt-10">
+            <InquiryForm />
+          </div>
+        </div>
       </div>
     </div>
   );

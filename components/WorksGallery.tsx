@@ -296,7 +296,9 @@ function GalleryCard({ a, onOpen, priority = false }: { a: Artwork; onOpen: () =
           {artistLabel(a.artist)}
           {a.medium ? ` · ${a.medium}` : ""}
         </p>
-        <p className="mt-0.5 text-[0.78rem] text-faint">{statusLabel(a)}</p>
+        {(isSold(a) || (a.price && a.price.trim())) && (
+          <p className="mt-0.5 text-[0.78rem] text-faint">{statusLabel(a)}</p>
+        )}
         <p className="mt-1 text-[0.65rem] tabular-nums tracking-[0.08em] text-faint/60">#{a.id}</p>
       </div>
     </button>

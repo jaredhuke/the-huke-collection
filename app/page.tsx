@@ -16,10 +16,11 @@ export default async function HomePage() {
   const confirmed = all.filter((a) => a.artist); // attributed works only
   const featured = confirmed.filter((a) => a.featured);
 
-  // Key/hero image leads with the collaborations.
+  // Lead with featured paintings — most visually striking; collabs second for story.
   const pool = [
+    ...confirmed.filter((a) => a.featured && a.medium === "Painting"),
+    ...confirmed.filter((a) => a.medium === "Painting"),
     ...confirmed.filter((a) => a.artist === "John & Randy Huke" && a.featured),
-    ...confirmed.filter((a) => a.artist === "John & Randy Huke"),
     ...featured,
     ...confirmed,
   ];
@@ -52,8 +53,9 @@ export default async function HomePage() {
               The Huke Collection
             </h1>
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-bg/85">
-              The paintings, works on paper, and sculpture of Randy Huke and John Huke
-              (1948&ndash;2016) — two Austin artists and lifelong creative partners.
+              Four decades of painting, sculpture, and drawing — made in Austin, side
+              by side. The complete works of Randy Huke and John{" "}Huke
+              (1948&ndash;2016), available for private acquisition.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <Link href="/works" className="group inline-flex items-center gap-3 bg-bg px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-ink transition-colors hover:bg-accent hover:text-bg">
@@ -73,9 +75,10 @@ export default async function HomePage() {
       <section className="mx-auto max-w-3xl px-5 py-24 text-center sm:px-8 sm:py-32">
         <Reveal>
           <p className="font-display text-2xl leading-[1.5] tracking-[-0.01em] text-ink sm:text-[2rem]">
-            For more than four decades, Randy and John Huke made art side by side —
-            exuberant color, restless invention, and a shared language of marks. This
-            is their collection, gathered in one place.
+            Randy Huke is 79 and still in the studio. John Huke painted, sculpted, and
+            invented until he died in 2016. Together they made something rare — a body
+            of work that is vibrant, serious, and impossible to place anywhere but
+            Austin, Texas.
           </p>
         </Reveal>
       </section>
