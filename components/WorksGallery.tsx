@@ -148,8 +148,13 @@ export default function WorksGallery({ artworks }: { artworks: Artwork[] }) {
               key={bi}
               className={`columns-1 gap-6 sm:columns-2 sm:gap-8 ${b.cols === 3 ? "lg:columns-3" : "lg:columns-2"}`}
             >
-              {b.items.map((a) => (
-                <GalleryCard key={a.id} a={a} onOpen={() => setActiveId(a.id)} />
+              {b.items.map((a, j) => (
+                <GalleryCard
+                  key={a.id}
+                  a={a}
+                  priority={bi === 0 && j < 4}
+                  onOpen={() => setActiveId(a.id)}
+                />
               ))}
             </div>
           ) : (
@@ -258,7 +263,7 @@ export default function WorksGallery({ artworks }: { artworks: Artwork[] }) {
   );
 }
 
-function GalleryCard({ a, onOpen }: { a: Artwork; onOpen: () => void }) {
+function GalleryCard({ a, onOpen, priority = false }: { a: Artwork; onOpen: () => void; priority?: boolean }) {
   return (
     <button
       onClick={onOpen}
@@ -272,6 +277,7 @@ function GalleryCard({ a, onOpen }: { a: Artwork; onOpen: () => void }) {
           height={a.height}
           blur={a.blur}
           rotate={a.rotate}
+          priority={priority}
           alt={`${a.title} — ${artistLabel(a.artist)}${a.medium ? `, ${a.medium}` : ""}`}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="bg-surface"
