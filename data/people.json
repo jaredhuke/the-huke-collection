@@ -27,6 +27,15 @@
     "blur": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAADwAwCdASoQABYAPxl2slEspySisAgBkCMJbACdMoADDnLUG+oYgG0IAP7GBVoFbi9Yhe6wz0TNWSeIawg8it+3tQJos5XLR7BAdoJu33EuB7H8LIhst37883/CRMYA+mnuRMD5WGbQGoqVTU3iiU4rGvjdwneciwsPTswAAAA="
   },
   {
+    "id": "couple-young",
+    "image": "/about/couple-young.jpg",
+    "caption": "Randy & John Huke",
+    "visible": true,
+    "width": 2400,
+    "height": 1600,
+    "blur": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAAAQAgCdASoQAAsABABsJaQAD46ulPphZA0AAP55EEJj36jOSE3I4yImXhzikMxESAnkWmdr5p5Y1a18FzGhD820Gs4j8AGVChtkMPTI43D1Ku6Zjt/L4jIXNTkTlQAA"
+  },
+  {
     "id": "couple-table",
     "image": "/about/couple-table.jpg",
     "caption": "Randy & John Huke",

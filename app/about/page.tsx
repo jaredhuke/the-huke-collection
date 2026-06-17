@@ -55,7 +55,7 @@ export default async function AboutPage() {
   const all = await getArtworks();
   const collabWork = all.find((a) => a.artist === "John & Randy Huke");
 
-  const hero = photo("couple-table");
+  const hero = photo("couple-young");
   const randyPhoto = photo("randy-portrait");
   const johnPhoto = photo("john-portrait");
   const lovePhoto = photo("couple-roses");
