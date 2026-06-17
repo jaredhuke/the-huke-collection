@@ -14,14 +14,33 @@ export default async function HomePage() {
   const all = await getArtworks();
   const confirmed = all.filter((a) => a.artist); // attributed works only
   const featured = confirmed.filter((a) => a.featured);
-  const heroSlides = [...featured, ...confirmed.filter((a) => !a.featured)].slice(0, 5);
+
+  // Key/hero image leads with the collaborations.
+  const pool = [
+    ...confirmed.filter((a) => a.artist === "John & Randy Huke" && a.featured),
+    ...confirmed.filter((a) => a.artist === "John & Randy Huke"),
+    ...featured,
+    ...confirmed,
+  ];
+  const heroSlides: Artwork[] = [];
+  const seen = new Set<string>();
+  for (const a of pool) {
+    if (seen.has(a.id)) continue;
+    seen.add(a.id);
+    heroSlides.push(a);
+    if (heroSlides.length >= 5) break;
+  }
+
   const grid = (featured.length ? featured : confirmed).slice(0, 9);
+  const band =
+    confirmed.find((a) => a.artist === "Randy Huke" && a.id !== "randy-01") ??
+    confirmed.find((a) => !heroSlides.slice(0, 1).includes(a));
   const love = people.find((p) => p.id === "couple-hills" && p.visible) ?? people.find((p) => p.visible);
 
   return (
     <>
       {/* Hero — full-screen slideshow */}
-      <section className="relative flex h-[88vh] min-h-[560px] w-full items-end overflow-hidden">
+      <section className="relative flex h-[90vh] min-h-[580px] w-full items-end overflow-hidden">
         <HeroSlideshow slides={heroSlides} />
         <div className="relative z-10 mx-auto w-full max-w-[1400px] px-5 pb-20 sm:px-8 sm:pb-28">
           <div className="rise-in max-w-2xl text-bg">
@@ -34,17 +53,11 @@ export default async function HomePage() {
               (1948&ndash;2016) — two Austin artists and lifelong creative partners.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
-              <Link
-                href="/works"
-                className="group inline-flex items-center gap-3 bg-bg px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-ink transition-colors hover:bg-accent hover:text-bg"
-              >
-                View the Works
+              <Link href="/works" className="group inline-flex items-center gap-3 bg-bg px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-ink transition-colors hover:bg-accent hover:text-bg">
+                View the Work
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </Link>
-              <Link
-                href="/about"
-                className="group inline-flex items-center gap-3 border border-bg/50 px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-bg transition-colors hover:bg-bg hover:text-ink"
-              >
+              <Link href="/about" className="group inline-flex items-center gap-3 border border-bg/50 px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-bg transition-colors hover:bg-bg hover:text-ink">
                 Their Story
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </Link>
@@ -64,14 +77,12 @@ export default async function HomePage() {
         </Reveal>
       </section>
 
-      {/* Selected works */}
+      {/* Selected work */}
       <section className="mx-auto max-w-[1400px] px-5 sm:px-8">
         <Reveal>
           <div className="flex items-end justify-between border-b border-hairline pb-5">
-            <h2 className="font-display text-3xl sm:text-4xl">Selected Works</h2>
-            <Link href="/works" className="link-underline text-[0.72rem] uppercase tracking-[0.2em] text-muted hover:text-ink">
-              View all
-            </Link>
+            <h2 className="font-display text-3xl sm:text-4xl">Selected Work</h2>
+            <Link href="/works" className="link-underline text-[0.72rem] uppercase tracking-[0.2em] text-muted hover:text-ink">View all</Link>
           </div>
         </Reveal>
         <div className="mt-8 columns-1 gap-6 sm:columns-2 lg:columns-3">
@@ -83,9 +94,27 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Dramatic full-bleed art band */}
+      {band && (
+        <section className="relative mt-24 flex min-h-[88vh] items-center overflow-hidden sm:mt-32">
+          <ParallaxImage src={band.image} blur={band.blur} strength={90} />
+          <div className="absolute inset-0 bg-ink/45" />
+          <Reveal className="relative z-10 mx-auto max-w-3xl px-6 text-center text-bg">
+            <p className="font-display text-[2.2rem] leading-[1.3] tracking-[-0.01em] sm:text-6xl">
+              Exuberant color. Restless invention.
+              <br className="hidden sm:block" /> A shared language of marks.
+            </p>
+            <Link href="/works" className="group mt-10 inline-flex items-center gap-3 border border-bg/60 px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-bg transition-colors hover:bg-bg hover:text-ink">
+              Enter the gallery
+              <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+            </Link>
+          </Reveal>
+        </section>
+      )}
+
       {/* Their great love — parallax band */}
       {love && (
-        <section className="relative mt-28 flex min-h-[70vh] items-center justify-center overflow-hidden">
+        <section className="relative flex min-h-[78vh] items-center justify-center overflow-hidden">
           <ParallaxImage src={love.image} blur={love.blur} />
           <div className="absolute inset-0 bg-ink/55" />
           <Reveal className="relative z-10 mx-auto max-w-2xl px-6 py-28 text-center text-bg">
@@ -94,10 +123,7 @@ export default async function HomePage() {
               They were partners in everything — in life, in the studio, and on the page,
               trading drawings back and forth until two hands became one.
             </p>
-            <Link
-              href="/about"
-              className="group mt-9 inline-flex items-center gap-3 border border-bg/60 px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-bg transition-colors hover:bg-bg hover:text-ink"
-            >
+            <Link href="/about" className="group mt-9 inline-flex items-center gap-3 border border-bg/60 px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-bg transition-colors hover:bg-bg hover:text-ink">
               Read their story
               <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
             </Link>
@@ -134,10 +160,7 @@ export default async function HomePage() {
               Many pieces are available to collectors. We&rsquo;re happy to share prices,
               dimensions, and details, or to help you find the right work.
             </p>
-            <Link
-              href="/inquire"
-              className="group mt-8 inline-flex items-center gap-3 bg-ink px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-bg transition-colors hover:bg-accent"
-            >
+            <Link href="/inquire" className="group mt-8 inline-flex items-center gap-3 bg-ink px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-bg transition-colors hover:bg-accent">
               Make an inquiry
               <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
             </Link>
@@ -182,7 +205,7 @@ function ArtistTeaser({ work, name, line }: { work?: Artwork; name: string; line
               rotate={work.rotate}
               alt={`Work by ${name}`}
               sizes="(max-width: 768px) 100vw, 45vw"
-              className="aspect-[4/3] bg-surface"
+              className="bg-surface"
               imgClassName="transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
             />
           </div>

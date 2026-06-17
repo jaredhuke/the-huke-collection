@@ -13,7 +13,7 @@ export const site = {
   // sheet's id and the live site reads titles, prices, sold status, rotation, and
   // visibility from it, refreshing within ~60s. Blank → built-in catalog.
   // The sheet must be shared "Anyone with the link → Viewer", data in the first tab.
-  sheetId: process.env.HUKE_SHEET_ID || "",
+  sheetId: process.env.HUKE_SHEET_ID || "1STSHn4wq50gnzcKm9BZoXTli7_WPJLR3bWeqKxL7fkI",
   sheetGid: "0",
 } as const;
 

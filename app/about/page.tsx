@@ -26,13 +26,26 @@ const EXHIBITIONS = [
 ];
 
 const RANDY_FILMS = [
-  "The Faculty (1998)", "Miss Congeniality (2000)", "Idiocracy (2006)",
-  "2 Guns (2013)", "The Leftovers (HBO)",
+  { y: "1998", t: "The Faculty" },
+  { y: "2000", t: "Miss Congeniality" },
+  { y: "2003", t: "The Texas Chainsaw Massacre" },
+  { y: "2006", t: "Idiocracy" },
+  { y: "2013", t: "2 Guns" },
+  { y: "2014", t: "The Leftovers" },
 ];
 const JOHN_FILMS = [
-  "Lonesome Dove (1989)", "Point Break (1991)", "Body Snatchers (1993)",
-  "The Beverly Hillbillies (1993)", "Empire Records (1995)",
-  "Lewis & Clark & George (1997)", "Drop Dead Sexy (2005)", "Being Rose (2017)",
+  { y: "1989", t: "Lonesome Dove" },
+  { y: "1991", t: "Point Break" },
+  { y: "1991", t: "Wild Texas Wind" },
+  { y: "1993", t: "Body Snatchers" },
+  { y: "1993", t: "The Beverly Hillbillies" },
+  { y: "1994", t: "On Promised Land" },
+  { y: "1994", t: "Without Consent" },
+  { y: "1995", t: "Empire Records" },
+  { y: "1997", t: "Lewis & Clark & George" },
+  { y: "2000", t: "Picnic" },
+  { y: "2005", t: "Drop Dead Sexy" },
+  { y: "2017", t: "Being Rose" },
 ];
 
 export default async function AboutPage() {
@@ -228,13 +241,13 @@ export default async function AboutPage() {
             </ul>
           </Reveal>
           <Reveal delay={80}>
-            <h2 className="font-display text-3xl">Film &amp; Screen</h2>
+            <h2 className="font-display text-3xl">Filmography</h2>
             <p className="mt-4 text-sm leading-relaxed text-muted">
-              Beyond the studio, Randy and John spent decades in the film world — Randy
-              as a set decorator and art director, John as a production designer and art
-              director — shaping the look of features shot in Texas and beyond.
+              Beyond the studio, Randy and John spent decades in film — Randy as a set
+              decorator and art director, John as a production designer and art director
+              — shaping the look of features shot in Texas and beyond.
             </p>
-            <div className="mt-7 space-y-6">
+            <div className="mt-7 space-y-8">
               <FilmCol who="Randy Huke — Set Decorator / Art Director" films={RANDY_FILMS} />
               <FilmCol who="John Huke — Production Designer / Art Director" films={JOHN_FILMS} />
             </div>
@@ -252,11 +265,18 @@ export default async function AboutPage() {
   );
 }
 
-function FilmCol({ who, films }: { who: string; films: string[] }) {
+function FilmCol({ who, films }: { who: string; films: { y: string; t: string }[] }) {
   return (
     <div>
       <p className="text-[0.7rem] uppercase tracking-[0.2em] text-faint">{who}</p>
-      <p className="mt-2 leading-relaxed text-muted">{films.join(" · ")}</p>
+      <ul className="mt-3 divide-y divide-hairline">
+        {films.map((f) => (
+          <li key={f.y + f.t} className="flex items-baseline justify-between gap-6 py-2.5">
+            <span className="text-ink">{f.t}</span>
+            <span className="text-sm tabular-nums text-faint">{f.y}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

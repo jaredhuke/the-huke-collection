@@ -18,7 +18,7 @@ export default function SiteFooter() {
 
           <nav className="flex flex-col gap-2 text-sm">
             <p className="eyebrow mb-2">Explore</p>
-            <Link className="link-underline w-fit text-muted hover:text-ink" href="/works">Works</Link>
+            <Link className="link-underline w-fit text-muted hover:text-ink" href="/works">Work</Link>
             <Link className="link-underline w-fit text-muted hover:text-ink" href="/about">The Artists</Link>
             <Link className="link-underline w-fit text-muted hover:text-ink" href="/inquire">Inquire</Link>
           </nav>

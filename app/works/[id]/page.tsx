@@ -61,7 +61,7 @@ export default async function WorkPage({ params }: { params: Promise<{ id: strin
         href="/works"
         className="link-underline text-[0.72rem] uppercase tracking-[0.2em] text-muted hover:text-ink"
       >
-        ← All works
+        ← All work
       </Link>
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
@@ -117,7 +117,7 @@ export default async function WorkPage({ params }: { params: Promise<{ id: strin
 
       {more.length > 0 && (
         <section className="mt-24">
-          <h2 className="border-b border-hairline pb-4 font-display text-2xl">More works</h2>
+          <h2 className="border-b border-hairline pb-4 font-display text-2xl">More work</h2>
           <div className="mt-8 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
             {more.map((m) => (
               <Link key={m.id} href={`/works/${m.id}`} className="group block">

@@ -105,7 +105,7 @@ export default function WorksGallery({ artworks }: { artworks: Artwork[] }) {
       </div>
 
       <p className="mt-5 text-[0.72rem] uppercase tracking-[0.2em] text-faint">
-        {filtered.length} {filtered.length === 1 ? "work" : "works"}
+        {filtered.length} {filtered.length === 1 ? "piece" : "pieces"}
       </p>
 
       <div className="mt-6 columns-1 gap-5 sm:columns-2 sm:gap-6 lg:columns-3">
