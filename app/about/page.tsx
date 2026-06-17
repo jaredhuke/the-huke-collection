@@ -53,7 +53,7 @@ export default async function AboutPage() {
   const collabWork = all.find((a) => a.artist === "John & Randy Huke");
 
   const hero = photo("couple-table");
-  const randyPhoto = photo("couple-hills");
+  const randyPhoto = photo("randy-portrait");
   const johnPhoto = photo("john-portrait");
   const lovePhoto = photo("couple-roses");
 
@@ -118,7 +118,7 @@ export default async function AboutPage() {
           <Reveal>
             {randyPhoto && (
               <div className="relative aspect-[4/5] overflow-hidden bg-surface">
-                <Image src={randyPhoto.image} alt="Randy Huke" fill sizes="(max-width:768px) 100vw, 45vw" placeholder={randyPhoto.blur ? "blur" : "empty"} blurDataURL={randyPhoto.blur} className="object-cover object-left" />
+                <Image src={randyPhoto.image} alt="Randy Huke" fill sizes="(max-width:768px) 100vw, 45vw" placeholder={randyPhoto.blur ? "blur" : "empty"} blurDataURL={randyPhoto.blur} className="object-cover object-top" />
               </div>
             )}
           </Reveal>

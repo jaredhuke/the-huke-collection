@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getArtworks } from "@/lib/artworks";
 import { artistLabel, captionLine, type Artwork } from "@/lib/artwork";
 import peopleData from "@/data/people.json";
@@ -36,6 +37,8 @@ export default async function HomePage() {
     confirmed.find((a) => a.artist === "Randy Huke" && a.id !== "randy-01") ??
     confirmed.find((a) => !heroSlides.slice(0, 1).includes(a));
   const love = people.find((p) => p.id === "couple-hills" && p.visible) ?? people.find((p) => p.visible);
+  const randyPhoto = people.find((p) => p.id === "randy-portrait" && p.visible);
+  const johnPhoto = people.find((p) => p.id === "john-portrait" && p.visible);
 
   return (
     <>
@@ -139,12 +142,12 @@ export default async function HomePage() {
         </Reveal>
         <div className="mt-12 grid gap-8 md:grid-cols-2 md:gap-12">
           <ArtistTeaser
-            work={confirmed.find((a) => a.artist === "Randy Huke")}
+            photo={randyPhoto}
             name="Randy Huke"
             line="Painter and film set decorator — now 79 and still in the studio — whose canvases move between exuberant color and quiet, searching abstraction."
           />
           <ArtistTeaser
-            work={confirmed.find((a) => a.artist === "John Huke" && a.medium === "Sculpture") ?? confirmed.find((a) => a.artist === "John Huke")}
+            photo={johnPhoto}
             name="John Huke"
             line="Artist, sculptor, printmaker, and filmmaker (1948–2016) — maker of the Lonesome Dove lithographs and a life of restless invention."
           />
@@ -191,22 +194,20 @@ function FeaturedCard({ a }: { a: Artwork }) {
   );
 }
 
-function ArtistTeaser({ work, name, line }: { work?: Artwork; name: string; line: string }) {
+function ArtistTeaser({ photo, name, line }: { photo?: Person; name: string; line: string }) {
   return (
     <Reveal className="group">
       <Link href="/about" className="block">
-        {work && (
-          <div className="overflow-hidden">
-            <ArtImage
-              image={work.image}
-              width={work.width}
-              height={work.height}
-              blur={work.blur}
-              rotate={work.rotate}
-              alt={`Work by ${name}`}
+        {photo && (
+          <div className="relative aspect-[4/5] overflow-hidden bg-surface">
+            <Image
+              src={photo.image}
+              alt={name}
+              fill
               sizes="(max-width: 768px) 100vw, 45vw"
-              className="bg-surface"
-              imgClassName="transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
+              placeholder={photo.blur ? "blur" : "empty"}
+              blurDataURL={photo.blur}
+              className="object-cover object-top transition-transform duration-[1.2s] ease-out group-hover:scale-[1.04]"
             />
           </div>
         )}

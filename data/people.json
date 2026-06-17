@@ -1,5 +1,32 @@
 [
   {
+    "id": "randy-portrait",
+    "image": "/about/randy-portrait.jpg",
+    "caption": "Randy Huke",
+    "visible": true,
+    "width": 1275,
+    "height": 1700,
+    "blur": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADQAwCdASoQABUAPxl0slEspqSisAgBkCMJbACdMoACM0JsC8CY/9AA/abAdv05zwudGBRRjyFoMCJlyLrwMpgPbBvxHtVuD3uM1L8AfyXIyVfMOt3y74wKdEyi5RNdDMwrcjqNmvA8J+23wAA="
+  },
+  {
+    "id": "john-portrait",
+    "image": "/about/john-portrait.jpg",
+    "caption": "John Huke",
+    "visible": true,
+    "width": 720,
+    "height": 960,
+    "blur": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAQBACdASoQABUAPxl0sVCspqSisAgBkCMJZQC06BjRXFkYFg2YO2CQAAD9lK1IciEa5ePv8HL0HMc05oz6CwvjE12ofRmnim2xXvGIxOREVfgLih1QIkX3Sk1tMXY1K8ZdXU1wulHDvnkMIc0AAA=="
+  },
+  {
+    "id": "john-portrait-2",
+    "image": "/about/john-portrait-2.jpg",
+    "caption": "John Huke",
+    "visible": true,
+    "width": 750,
+    "height": 1000,
+    "blur": "data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAADwAwCdASoQABYAPxl2slEspySisAgBkCMJbACdMoADDnLUG+oYgG0IAP7GBVoFbi9Yhe6wz0TNWSeIawg8it+3tQJos5XLR7BAdoJu33EuB7H8LIhst37883/CRMYA+mnuRMD5WGbQGoqVTU3iiU4rGvjdwneciwsPTswAAAA="
+  },
+  {
     "id": "couple-table",
     "image": "/about/couple-table.jpg",
     "caption": "Randy & John Huke",
@@ -25,14 +52,5 @@
     "width": 960,
     "height": 720,
     "blur": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAAAwAgCdASoQAAwABABsJagCsH8AFnKic6ZQAAD+6Zxg6L2tSe8VG8zp4Ku2RBjCxsNJ7sPHymnsx+rVp541FHl8LwNFQbiPgQF1I9MZ0PslcYA4/TL4tqs9V0kXZcM/gAAAAA=="
-  },
-  {
-    "id": "john-portrait",
-    "image": "/about/john-portrait.jpg",
-    "caption": "John Huke",
-    "visible": true,
-    "width": 720,
-    "height": 960,
-    "blur": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAQBACdASoQABUAPxl0sVCspqSisAgBkCMJZQC06BjRXFkYFg2YO2CQAAD9lK1IciEa5ePv8HL0HMc05oz6CwvjE12ofRmnim2xXvGIxOREVfgLih1QIkX3Sk1tMXY1K8ZdXU1wulHDvnkMIc0AAA=="
   }
 ]
