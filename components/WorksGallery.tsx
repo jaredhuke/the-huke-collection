@@ -17,11 +17,35 @@ import ShareButtons from "@/components/ShareButtons";
 
 const MEDIUM_ORDER = ["Painting", "Works on Paper", "Sculpture"];
 
+type Block =
+  | { kind: "grid"; cols: 2 | 3; items: Artwork[] }
+  | { kind: "spot"; item: Artwork; flip: boolean };
+
+/** Break the list into a varied editorial rhythm: alternating 2-up / 3-up masonry
+ *  chapters with full-width spotlight features between them. */
+function buildBlocks(items: Artwork[]): Block[] {
+  const blocks: Block[] = [];
+  let i = 0;
+  let cycle = 0;
+  while (i < items.length) {
+    const dense = cycle % 2 === 1;
+    const chunk = dense ? 12 : 8;
+    blocks.push({ kind: "grid", cols: dense ? 3 : 2, items: items.slice(i, i + chunk) });
+    i += chunk;
+    if (i < items.length - 1) {
+      blocks.push({ kind: "spot", item: items[i], flip: cycle % 2 === 1 });
+      i += 1;
+    }
+    cycle++;
+  }
+  return blocks;
+}
+
 export default function WorksGallery({ artworks }: { artworks: Artwork[] }) {
   const [artist, setArtist] = useState("All");
   const [medium, setMedium] = useState("All");
   const [series, setSeries] = useState("All");
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   const artists = useMemo(() => {
     const present = new Set(artworks.map((a) => a.artist).filter(Boolean));
@@ -51,17 +75,26 @@ export default function WorksGallery({ artworks }: { artworks: Artwork[] }) {
     [artworks, artist, medium, series]
   );
 
-  useEffect(() => setActiveIndex(null), [artist, medium, series]);
+  const blocks = useMemo(() => buildBlocks(filtered), [filtered]);
 
-  const active = activeIndex == null ? null : filtered[activeIndex] ?? null;
-  const close = useCallback(() => setActiveIndex(null), []);
+  useEffect(() => setActiveId(null), [artist, medium, series]);
+
+  const index = activeId == null ? -1 : filtered.findIndex((a) => a.id === activeId);
+  const active = index < 0 ? null : filtered[index];
+  const close = useCallback(() => setActiveId(null), []);
   const go = useCallback(
-    (dir: number) => setActiveIndex((i) => (i == null ? i : (i + dir + filtered.length) % filtered.length)),
-    [filtered.length]
+    (dir: number) =>
+      setActiveId((cur) => {
+        if (cur == null) return cur;
+        const ix = filtered.findIndex((a) => a.id === cur);
+        if (ix < 0) return cur;
+        return filtered[(ix + dir + filtered.length) % filtered.length].id;
+      }),
+    [filtered]
   );
 
   useEffect(() => {
-    if (active == null) return;
+    if (!active) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
       else if (e.key === "ArrowRight") go(1);
@@ -108,42 +141,21 @@ export default function WorksGallery({ artworks }: { artworks: Artwork[] }) {
         {filtered.length} {filtered.length === 1 ? "piece" : "pieces"}
       </p>
 
-      <div className="mt-6 columns-1 gap-5 sm:columns-2 sm:gap-6 lg:columns-3">
-        {filtered.map((a, i) => (
-          <button
-            key={a.id}
-            onClick={() => setActiveIndex(i)}
-            className="group mb-5 block w-full break-inside-avoid text-left sm:mb-6"
-            aria-label={`View ${captionLine(a)} by ${artistLabel(a.artist)}`}
-          >
-            <div className="relative overflow-hidden">
-              <ArtImage
-                image={a.image}
-                width={a.width}
-                height={a.height}
-                blur={a.blur}
-                rotate={a.rotate}
-                alt={`${a.title} — ${artistLabel(a.artist)}${a.medium ? `, ${a.medium}` : ""}`}
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="bg-surface"
-                imgClassName="transition-transform duration-[1.2s] ease-out group-hover:scale-[1.035]"
-              />
-              {isSold(a) && (
-                <span className="absolute left-0 top-4 z-10 bg-accent px-3 py-1 text-[0.62rem] uppercase tracking-[0.18em] text-white">
-                  Sold
-                </span>
-              )}
+      <div className="mt-8 space-y-14 sm:space-y-24">
+        {blocks.map((b, bi) =>
+          b.kind === "grid" ? (
+            <div
+              key={bi}
+              className={`columns-1 gap-6 sm:columns-2 sm:gap-8 ${b.cols === 3 ? "lg:columns-3" : "lg:columns-2"}`}
+            >
+              {b.items.map((a) => (
+                <GalleryCard key={a.id} a={a} onOpen={() => setActiveId(a.id)} />
+              ))}
             </div>
-            <div className="mt-3">
-              <p className="font-display text-lg italic leading-snug">{captionLine(a)}</p>
-              <p className="mt-0.5 text-[0.78rem] text-muted">
-                {artistLabel(a.artist)}
-                {a.medium ? ` · ${a.medium}` : ""}
-              </p>
-              <p className="mt-0.5 text-[0.78rem] text-faint">{statusLabel(a)}</p>
-            </div>
-          </button>
-        ))}
+          ) : (
+            <Spotlight key={bi} a={b.item} flip={b.flip} onOpen={() => setActiveId(b.item.id)} />
+          )
+        )}
       </div>
 
       {filtered.length === 0 && <p className="py-24 text-center text-muted">No works match this selection.</p>}
@@ -154,20 +166,36 @@ export default function WorksGallery({ artworks }: { artworks: Artwork[] }) {
           role="dialog"
           aria-modal="true"
           aria-label={`${captionLine(active)} by ${artistLabel(active.artist)}`}
-          onClick={close}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) close();
+          }}
         >
-          <div className="flex items-center justify-between px-5 py-4 text-bg/70 sm:px-8">
+          <div className="flex shrink-0 items-center justify-between px-5 py-4 text-bg/70 sm:px-8">
             <span className="text-[0.72rem] uppercase tracking-[0.2em]">
-              {(activeIndex ?? 0) + 1} / {filtered.length}
+              {index + 1} / {filtered.length}
             </span>
-            <button type="button" onClick={close} className="flex items-center gap-2 text-[0.72rem] uppercase tracking-[0.2em] transition-colors hover:text-bg">
-              Close <span className="text-base leading-none">&times;</span>
+            <button
+              type="button"
+              onClick={close}
+              className="-mr-2 flex items-center gap-2 p-2 text-[0.72rem] uppercase tracking-[0.2em] transition-colors hover:text-bg"
+            >
+              Close <span className="text-lg leading-none">&times;</span>
             </button>
           </div>
 
-          <div className="flex flex-1 flex-col overflow-hidden lg:flex-row" onClick={(e) => e.stopPropagation()}>
-            <div className="relative flex-1 px-4 pb-4 lg:px-10 lg:pb-10">
-              <div className="relative h-full min-h-[42vh] w-full">
+          <div
+            className="flex flex-1 flex-col overflow-hidden lg:flex-row"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) close();
+            }}
+          >
+            <button
+              type="button"
+              onClick={close}
+              aria-label="Close"
+              className="relative flex-1 cursor-zoom-out px-4 pb-4 lg:px-10 lg:pb-10"
+            >
+              <span className="relative block h-full min-h-[42vh] w-full">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={active.image}
@@ -175,10 +203,13 @@ export default function WorksGallery({ artworks }: { artworks: Artwork[] }) {
                   className="absolute inset-0 h-full w-full object-contain"
                   style={{ transform: `rotate(${normRotate(active.rotate)}deg)` }}
                 />
-              </div>
-            </div>
+              </span>
+            </button>
 
-            <aside className="shrink-0 overflow-y-auto border-t border-bg/10 bg-ink px-6 py-7 text-bg lg:w-[360px] lg:border-l lg:border-t-0 lg:px-9 lg:py-12">
+            <aside
+              className="shrink-0 overflow-y-auto border-t border-bg/10 bg-ink px-6 py-7 text-bg lg:w-[360px] lg:border-l lg:border-t-0 lg:px-9 lg:py-12"
+              onClick={(e) => e.stopPropagation()}
+            >
               <p className="text-[0.7rem] uppercase tracking-[0.24em] text-bg/45">{artistLabel(active.artist)}</p>
               <h2 className="mt-3 font-display text-3xl italic leading-tight">{active.title}</h2>
 
@@ -224,6 +255,95 @@ export default function WorksGallery({ artworks }: { artworks: Artwork[] }) {
         </div>
       )}
     </div>
+  );
+}
+
+function GalleryCard({ a, onOpen }: { a: Artwork; onOpen: () => void }) {
+  return (
+    <button
+      onClick={onOpen}
+      className="group mb-6 block w-full break-inside-avoid text-left sm:mb-8"
+      aria-label={`View ${captionLine(a)} by ${artistLabel(a.artist)}`}
+    >
+      <div className="relative overflow-hidden">
+        <ArtImage
+          image={a.image}
+          width={a.width}
+          height={a.height}
+          blur={a.blur}
+          rotate={a.rotate}
+          alt={`${a.title} — ${artistLabel(a.artist)}${a.medium ? `, ${a.medium}` : ""}`}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="bg-surface"
+          imgClassName="transition-transform duration-[1.2s] ease-out group-hover:scale-[1.035]"
+        />
+        {isSold(a) && (
+          <span className="absolute left-0 top-4 z-10 bg-accent px-3 py-1 text-[0.62rem] uppercase tracking-[0.18em] text-white">
+            Sold
+          </span>
+        )}
+      </div>
+      <div className="mt-3">
+        <p className="font-display text-lg italic leading-snug">{captionLine(a)}</p>
+        <p className="mt-0.5 text-[0.78rem] text-muted">
+          {artistLabel(a.artist)}
+          {a.medium ? ` · ${a.medium}` : ""}
+        </p>
+        <p className="mt-0.5 text-[0.78rem] text-faint">{statusLabel(a)}</p>
+      </div>
+    </button>
+  );
+}
+
+function Spotlight({ a, flip, onOpen }: { a: Artwork; flip: boolean; onOpen: () => void }) {
+  return (
+    <section className="-mx-5 border-y border-hairline bg-surface px-5 py-12 sm:-mx-8 sm:px-8 sm:py-16">
+      <div className="grid items-center gap-8 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
+        <button
+          type="button"
+          onClick={onOpen}
+          aria-label={`View ${captionLine(a)} by ${artistLabel(a.artist)}`}
+          className={`group block ${flip ? "lg:order-2" : ""}`}
+        >
+          <ArtImage
+            image={a.image}
+            width={a.width}
+            height={a.height}
+            blur={a.blur}
+            rotate={a.rotate}
+            alt={`${a.title} — ${artistLabel(a.artist)}`}
+            sizes="(max-width: 1024px) 100vw, 60vw"
+            className="bg-bg"
+            imgClassName="transition-transform duration-[1.4s] ease-out group-hover:scale-[1.03]"
+          />
+        </button>
+        <div className={flip ? "lg:order-1" : ""}>
+          <p className="eyebrow">
+            {artistLabel(a.artist)}
+            {a.medium ? ` · ${a.medium}` : ""}
+          </p>
+          <h3 className="mt-3 font-display text-4xl italic leading-tight sm:text-5xl">{captionLine(a)}</h3>
+          {a.description && <p className="mt-5 max-w-md leading-relaxed text-muted">{a.description}</p>}
+          <p className="mt-5 text-sm text-faint">{statusLabel(a)}</p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={onOpen}
+              className="group inline-flex items-center gap-3 bg-ink px-7 py-4 text-[0.72rem] uppercase tracking-[0.2em] text-bg transition-colors hover:bg-accent"
+            >
+              View work
+              <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+            </button>
+            <Link
+              href={`/works/${a.id}`}
+              className="link-underline inline-flex items-center py-4 text-[0.72rem] uppercase tracking-[0.2em] text-muted hover:text-ink"
+            >
+              Full page ↗
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
