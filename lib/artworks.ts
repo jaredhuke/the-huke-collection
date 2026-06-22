@@ -128,7 +128,11 @@ export async function getArtworks(): Promise<Artwork[]> {
     set("title", row.title);
     set("artist", row.artist);
     set("year", row.year);
-    set("medium", row.medium);
+    // Skip stale "Painting" in sheet when the SEED has "Mixed Media" (john-painting-* items).
+    const sheetMedium = (row.medium || "").trim();
+    if (sheetMedium && !(sheetMedium === "Painting" && base?.medium === "Mixed Media")) {
+      set("medium", sheetMedium);
+    }
     set("dimensions", row.dimensions);
     // Skip stale sheet seeds ($2,500 / $3,500 placeholders); prefer SEED prices until sheet is updated.
     const sheetPrice = (row.price || "").trim().replace(/[$,]/g, "");
