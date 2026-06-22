@@ -11,8 +11,8 @@ export default function SiteFooter() {
             <p className="eyebrow">The</p>
             <p className="font-display text-3xl leading-tight">Huke Collection</p>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
-              The paintings, works on paper, and sculpture of Randy Huke and John
-              Huke (1948&ndash;2016).
+              The paintings, mixed media, works on paper, and sculpture of Randy
+              Huke and John Huke (1948&ndash;2016).
             </p>
           </div>
 

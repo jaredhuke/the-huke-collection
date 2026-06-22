@@ -45,6 +45,7 @@ const JOHN_FILMS = [
   { y: "1994", t: "On Promised Land" },
   { y: "1994", t: "Without Consent" },
   { y: "1995", t: "Empire Records" },
+  { y: "1996", t: "Cadillac Ranch" },
   { y: "1997", t: "Lewis & Clark & George" },
   { y: "2000", t: "Picnic" },
   { y: "2005", t: "Drop Dead Sexy" },
@@ -179,7 +180,8 @@ export default async function AboutPage() {
                 <em>Empire Records</em>, and <em>The Beverly Hillbillies</em>. From the
                 set of <em>Lonesome Dove</em> he made a celebrated series of lithographs.
                 His paintings, prints, and sculpture were exhibited at the Austin Museum
-                of Art and the Mary Ryan Gallery in New York.
+                of Art and the Mary Ryan Gallery in New York. He was still painting
+                when he died — his last canvas, left unfinished, is in the collection.
               </p>
             </div>
           </Reveal>

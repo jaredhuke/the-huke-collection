@@ -2,9 +2,9 @@
 export const site = {
   name: "The Huke Collection",
   shortName: "Huke",
-  tagline: "Paintings, works on paper & sculpture by Randy and John Huke",
+  tagline: "Paintings, mixed media, works on paper & sculpture by Randy and John Huke",
   description:
-    "The Huke Collection presents the paintings, works on paper, and sculpture of Randy Huke and John Huke (1948–2016) — two Austin artists whose lyrical, color-driven work spans decades of independent and collaborative practice.",
+    "The Huke Collection presents the paintings, mixed media, works on paper, and sculpture of Randy Huke and John Huke (1948–2016) — two Austin artists whose lyrical, color-driven work spans decades of independent and collaborative practice.",
   location: "Austin, Texas",
   // Production URL (update to a custom domain if/when you add one).
   url: "https://the-huke-collection.vercel.app",

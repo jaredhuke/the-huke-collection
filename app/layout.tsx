@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   applicationName: site.name,
   keywords: [
     "Randy Huke", "John Huke", "Huke Collection", "Austin artist",
-    "abstract painting", "works on paper", "sculpture", "Visual Conversations",
+    "abstract painting", "mixed media", "works on paper", "sculpture", "Visual Conversations",
     "Lonesome Dove lithographs", "contemporary art", "original art for sale",
   ],
   authors: [{ name: "Randy Huke" }, { name: "John Huke" }],

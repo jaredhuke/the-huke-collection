@@ -20,6 +20,24 @@ type ManifestItem = {
   blur?: string;
 };
 
+// Squarespace-derived price tiers, keyed by group + artist + aspect ratio.
+function defaultPrice(m: ManifestItem): string {
+  const ratio = m.width / m.height;
+  if (m.group === "john-sculpture") return "8000";
+  if (m.group === "collab") return "1400";
+  if (m.group === "randy" || (m.group === "selected" && m.artist === "Randy Huke")) return "1800";
+  if (m.group === "john-painting") {
+    if (ratio >= 1.8) return "1500";
+    if (ratio >= 1.3) return "1200";
+    if (ratio >= 0.9) return "1000";
+    return "1200";
+  }
+  // selected John
+  if (ratio >= 1.8) return "1500";
+  if (ratio >= 1.1) return "1200";
+  return "1000";
+}
+
 // A curated handful that anchor the homepage "Selected Works".
 const FEATURED = new Set([
   "selected-01", "selected-14", "selected-27", "selected-20",
@@ -35,7 +53,7 @@ export const SEED: Artwork[] = (manifest as ManifestItem[]).map((m) => ({
   year: "",
   medium: m.medium,
   dimensions: "",
-  price: "",
+  price: defaultPrice(m),
   status: "Available",
   visible: true,
   featured: FEATURED.has(m.id),
@@ -112,7 +130,9 @@ export async function getArtworks(): Promise<Artwork[]> {
     set("year", row.year);
     set("medium", row.medium);
     set("dimensions", row.dimensions);
-    set("price", row.price);
+    // Skip stale sheet seeds ($2,500 / $3,500 placeholders); prefer SEED prices until sheet is updated.
+    const sheetPrice = (row.price || "").trim().replace(/[$,]/g, "");
+    if (sheetPrice && sheetPrice !== "2500" && sheetPrice !== "3500") set("price", sheetPrice);
     set("status", row.status);
     set("description", row.description);
     set("series", row.series);

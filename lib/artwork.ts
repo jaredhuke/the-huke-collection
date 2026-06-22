@@ -50,7 +50,11 @@ export function statusLabel(a: Artwork): string {
   if (s === "nfs" || s.includes("not for sale")) return "Not for sale";
   const p = (a.price || "").trim();
   if (!p) return "Price on request";
-  return /^[\d][\d.,]*$/.test(p) ? `$${p}` : p;
+  if (/^[\d][\d.,]*$/.test(p)) {
+    const n = parseInt(p.replace(/,/g, ""), 10);
+    return isNaN(n) ? `$${p}` : `$${n.toLocaleString("en-US")}`;
+  }
+  return p;
 }
 
 /** A single human-readable caption line, e.g. "Untitled, 1998". */

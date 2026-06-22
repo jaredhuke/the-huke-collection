@@ -15,7 +15,7 @@ import { site } from "@/lib/config";
 import ArtImage from "@/components/ArtImage";
 import ShareButtons from "@/components/ShareButtons";
 
-const MEDIUM_ORDER = ["Painting", "Works on Paper", "Sculpture"];
+const MEDIUM_ORDER = ["Painting", "Mixed Media", "Works on Paper", "Sculpture"];
 
 type Block =
   | { kind: "grid"; cols: 2 | 3; items: Artwork[] }

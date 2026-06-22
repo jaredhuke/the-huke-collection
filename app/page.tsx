@@ -16,10 +16,11 @@ export default async function HomePage() {
   const confirmed = all.filter((a) => a.artist); // attributed works only
   const featured = confirmed.filter((a) => a.featured);
 
-  // Lead with featured paintings — most visually striking; collabs second for story.
+  // Lead with featured paintings/mixed-media — most visually striking; collabs second for story.
+  const canvas = (a: Artwork) => a.medium === "Painting" || a.medium === "Mixed Media";
   const pool = [
-    ...confirmed.filter((a) => a.featured && a.medium === "Painting"),
-    ...confirmed.filter((a) => a.medium === "Painting"),
+    ...confirmed.filter((a) => a.featured && canvas(a)),
+    ...confirmed.filter((a) => canvas(a)),
     ...confirmed.filter((a) => a.artist === "John & Randy Huke" && a.featured),
     ...featured,
     ...confirmed,
